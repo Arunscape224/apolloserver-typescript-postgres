@@ -46,12 +46,12 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req, em }: MyContext) {
-    if ((!req.session.userId)) {
+    if (!req.session.userId) {
       return null;
     }
 
-    const user = await em.findOne(User, {id: req.session.userId})
-    return user
+    const user = await em.findOne(User, { id: req.session.userId });
+    return user;
   }
 
   @Mutation(() => UserResponse)
@@ -138,5 +138,21 @@ export class UserResolver {
     return {
       user,
     };
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) =>
+    // returning any for now, fix this.
+      req.session.destroy((err: any) => {
+        res.clearCookie("qid");
+        if (err) {
+          console.log(err);
+          resolve(false);
+          return;
+        }
+        resolve(true);
+      })
+    );
   }
 }
