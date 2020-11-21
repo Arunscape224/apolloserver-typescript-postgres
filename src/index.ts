@@ -9,9 +9,13 @@ import redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
+// import { User } from "./entities/User";
+// import { sendEmail } from "./utils/sendEmail";
 
 const main = async () => {
+  // sendEmail("bob@bob.com", "Hello there")
   const orm = await MikroORM.init(microConfig);
+  // await orm.em.nativeDelete(User, {})
   await orm.getMigrator().up();
   const app = express();
   let RedisStore = connectRedis(session);
